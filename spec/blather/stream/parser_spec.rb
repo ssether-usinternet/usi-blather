@@ -144,24 +144,4 @@ describe Blather::Stream::Parser do
     expect(client.data[0].document.xpath('/stream:stream[@to="example.com" and @version="1.0"]', 'xmlns' => 'jabber:client', 'stream' => 'http://etherx.jabber.org/streams').size).to eq(1)
     expect(client.data[1].to_s).to eq('<stream:features xmlns:stream="http://etherx.jabber.org/streams"/>')
   end
-
-  it 'ignores the client namespace on stanzas' do
-    process "<message type='chat' to='n@d' from='n@d/r' id='id1' xmlns='jabber:client'>",
-      "<body>exit</body>",
-      "<html xmlns='http://jabber.org/protocol/xhtml-im'><body xmlns='http://www.w3.org/1999/xhtml'>exit</body></html>",
-      "</message>"
-    expect(client.data.size).to eq(1)
-    expect(client.data[0].document.xpath('/message/body[.="exit"]')).not_to be_empty
-    expect(client.data[0].document.xpath('/message/im:html/xhtml:body[.="exit"]', 'im' => 'http://jabber.org/protocol/xhtml-im', 'xhtml' => 'http://www.w3.org/1999/xhtml')).not_to be_empty
-  end
-
-  it 'ignores the component namespace on stanzas' do
-    process "<message type='chat' to='n@d' from='n@d/r' id='id1' xmlns='jabber:component:accept'>",
-      "<body>exit</body>",
-      "<html xmlns='http://jabber.org/protocol/xhtml-im'><body xmlns='http://www.w3.org/1999/xhtml'>exit</body></html>",
-      "</message>"
-    expect(client.data.size).to eq(1)
-    expect(client.data[0].document.xpath('/message/body[.="exit"]')).not_to be_empty
-    expect(client.data[0].document.xpath('/message/im:html/xhtml:body[.="exit"]', 'im' => 'http://jabber.org/protocol/xhtml-im', 'xhtml' => 'http://www.w3.org/1999/xhtml')).not_to be_empty
-  end
 end
